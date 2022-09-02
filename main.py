@@ -4,7 +4,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import datetime
-from weather import *
 import json
 import requests
 import geocoder
@@ -229,7 +228,8 @@ def main():
 
     # Initialize the GUI
     app = QApplication(sys.argv)
-    QFontDatabase.addApplicationFont("EncodeSansCondensed-ExtraLight.ttf")
+    QFontDatabase.addApplicationFont(
+        "fonts\EncodeSansCondensed-ExtraLight.ttf")
     app.setStyleSheet(
         "QLabel{font-family: Encode Sans Condensed ExLight; color: black;}")
     ex = window()
