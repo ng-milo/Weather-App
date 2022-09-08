@@ -22,6 +22,7 @@ class weatherStats:
     conditions = ''
     maxTemp = ''
     minTemp = ''
+    iconLink = ''
 
     def __init__(self):
         inputFile = open('result.json')
@@ -34,6 +35,7 @@ class weatherStats:
                            [0]['day']['maxtemp_c'])
         self.minTemp = str(data['forecast']['forecastday']
                            [0]['day']['mintemp_c'])
+        self.iconLink = str(data['current']['condition']['icon'])
         inputFile.close()
 
     def makeUpdates(self):
@@ -47,6 +49,7 @@ class weatherStats:
                            [0]['day']['maxtemp_c'])
         self.minTemp = str(data['forecast']['forecastday']
                            [0]['day']['mintemp_c'])
+        self.iconLink = str(data['current']['condition']['icon'])
         inputFile.close()
 
 
@@ -78,6 +81,36 @@ def updateFile(userAPI):
     pass
 
 
+def getIcon(givenLink):
+    givenLink = givenLink.lower()
+    if ('sunny' in givenLink):
+        return "☀️"
+    elif ('partly cloudy' in givenLink):
+        return "⛅"
+    elif ('overcast' in givenLink):
+        return "☁️"
+    elif ('cloudy' in givenLink):
+        return "☁️"
+    elif ('rain' in givenLink):
+        return "🌧️"
+    elif ('shower' in givenLink):
+        return "🌧️"
+    elif ('drizzle' in givenLink):
+        return "🌧️"
+    elif ('thunder' in givenLink):
+        return "⛈️"
+    elif ('snow' in givenLink):
+        return "🌨️"
+    elif ('blizzard' in givenLink):
+        return "🌨️"
+    elif ('sleet' in givenLink):
+        return "🌨️"
+    elif ('ice' in givenLink):
+        return "🌨️"
+    else:
+        return " "
+
+
 """
     This is the main window class
     It will contain all the widgets
@@ -97,6 +130,7 @@ class window(QMainWindow):
         super().__init__()
         self.weatherInfo = weatherStats()
         self.getAPI()
+
         self.initUI()
         if (self.apiKey != ''):
             updateFile(self.apiKey)
@@ -106,11 +140,14 @@ class window(QMainWindow):
         This is for the Main Forcast
 
         """
+        # ⛅☀️☁️🌧️🌨️⛈️
+        # Partly cloudy, Sunny,
         # Create a central widget
         layout = QVBoxLayout()
         # Make Text for everything correct
         tempText = self.weatherInfo.location + "\n" + self.weatherInfo.temps + "°C"
         weatherText = self.weatherInfo.conditions
+        weatherText += " " + getIcon(self.weatherInfo.conditions)
         feelsText = "Feels Like: " + self.weatherInfo.feels + "°C"
         lowhiText = "H: " + self.weatherInfo.maxTemp + "°C     |     L: "
         lowhiText += self.weatherInfo.minTemp + "°C"
@@ -151,7 +188,7 @@ class window(QMainWindow):
 
         """
 
-        This is to update the temperature every hour
+        This is to update the temperature every half hour
 
         """
         self.timer = QTimer()
@@ -221,6 +258,15 @@ class window(QMainWindow):
         temp = QInputDialog.getText(self, 'API Key', 'Enter API Key:')
         self.apiKey = temp[0]
         pass
+
+
+stylesheet = """
+    MainWindow {
+        background-image: url("/img/background.jpg"); 
+        background-repeat: no-repeat; 
+        background-position: center;
+    }
+"""
 
 
 def main():
