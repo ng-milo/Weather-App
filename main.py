@@ -7,6 +7,7 @@ import datetime
 import json
 import requests
 import geocoder
+import time
 
 """
 This is the weather class
@@ -131,10 +132,38 @@ class window(QMainWindow):
         self.weatherInfo = weatherStats()
         self.getAPI()
 
+        ip = geocoder.ip("me")
+        longLat = str(ip.latlng[0])
+        longLat += ' '
+        longLat += str(ip.latlng[1])
+        apiCall = 'https://api.weatherapi.com/v1/forecast.json?key='
+        apiCall += self.apiKey
+        apiCall += '&q='
+        apiCall += longLat
+        apiCall += '&days=7&aqi=yes&alerts=yes'
+        # Call the API to get data
+        # Place data in json file
+        response = requests.get(apiCall)
+        if (response.status_code != 200):
+            while (response.status_code != 200):
+                self.getAPI()
+                time.sleep(3.5)
+                ip = geocoder.ip("me")
+                longLat = str(ip.latlng[0])
+                longLat += ' '
+                longLat += str(ip.latlng[1])
+                apiCall = 'https://api.weatherapi.com/v1/forecast.json?key='
+                apiCall += self.apiKey
+                apiCall += '&q='
+                apiCall += longLat
+                apiCall += '&days=7&aqi=yes&alerts=yes'
+                # Call the API to get data
+                # Place data in json file
+                response = requests.get(apiCall)
+
         self.initUI()
-        if (self.apiKey != ''):
-            updateFile(self.apiKey)
-            self.weatherInfo.makeUpdates()
+        updateFile(self.apiKey)
+        self.weatherInfo.makeUpdates()
         """
 
         This is for the Main Forcast
